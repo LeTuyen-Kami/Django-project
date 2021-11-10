@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+    <meta charset="utf-8" />
+    <title>Show polygon information on click</title>
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/298c92426c.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js"></script>
+    <link rel="stylesheet" href="{% static 'style1.css' %}" />
+  </head>
+  <body>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+      type="text/css"
+    />
+    <style>
+      .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+      }
+    </style>
+    <div class="nav">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/3498/3498122.png"
+        alt="Lotus"
+      />
+      <ul>
+        <li>
+          <a href="#"><i class="fas fa-home"></i> home</a>
+        </li>
+        <li>
+          <a href="{% url 'map' %}"><i class="far fa-map"></i> map</a>
+        </li>
+        <li>
+          <a href="#"><i class="far fa-newspaper"></i> News</a>
+        </li>
+        <li>
+          <a href="{% url 'chart' %}"><i class="far fa-chart-bar"></i> Chart</a>
+        </li>
+        <div id="sliding"></div>
+      </ul>
+    </div>
+    <div id="map">
+      <div id="groupLayer" style="background-color: white">
+        <i class="fas fa-layer-group"></i>
+      </div>
+      <div id="layer">
+        <div class="img">
+          <img src="{% static 'map-light.png' %}" alt="" id="light-v10" />
+          <p>Màu sáng</p>
+        </div>
+        <div class="img">
+          <img src="{% static 'map-dark.png' %}" alt="" id="dark-v10" />
+          <p>Màu tối</p>
+        </div>
+        <div class="img">
+          <img src="{% static 'map-streets.png' %}" alt="" id="streets-v11" />
+          <p>Streets</p>
+        </div>
+        <div class="img">
+          <img src="{% static '/map-outdoors.png' %}" alt="" id="outdoors-v11" />
+          <p>Oudoors</p>
+        </div>
+        <div class="img">
+          <img src="{% static '/map-statellite.png' %}" alt="" id="satellite-v9" />
+          <p>Statellute</p>
+        </div>
+      </div>
+    </div>
+    <script src="{% static 'map4.js' %}"></script>
+    <script>
+      var groupLayer = document.getElementById("groupLayer");
+      var layer = document.getElementById("layer");
+      groupLayer.addEventListener("click", (e) => {
+        if (groupLayer.style.backgroundColor == "white") {
+          layer.style.display = "flex";
+          groupLayer.style.background = "lightblue";
+        } else {
+          groupLayer.style.background = "white";
+          layer.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

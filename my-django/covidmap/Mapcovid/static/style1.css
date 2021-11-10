@@ -1,0 +1,149 @@
+
+body {
+  margin: 0;
+  padding: 0;
+}
+#map {
+  position: absolute;
+  top: 55px;
+  bottom: 0;
+  width: 100%;
+}
+li {
+    float: left;
+    background: inherit;
+    text-transform: uppercase;
+    user-select: none;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  li:nth-child(1) {
+    margin-left: 100px;
+  }
+ .nav a {
+    position: relative;
+    text-decoration: none;
+    display: block;
+    width: 100px;
+    height: 55px;
+    text-align: center;
+    overflow: hidden;
+    top: 20px;
+  }
+ .nav a::after{
+    content: "";
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: pink;
+    transform: scaleX(0);
+    transition: transform 500ms ease;
+  }
+ .nav a:hover::after{
+    transform: scaleX(1);
+  }
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav {
+    background: white;
+    position: absolute;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 100px 1px rgb(211, 208, 208);
+  }
+  #sliding{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100px;
+    height: 5px;
+    left: 200px;
+    background-color: pink;
+    transition:ease-in-out  1s;
+  }
+  .nav::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+.nav img {
+    margin-left: 30px;
+    position: absolute;
+    width: 50px;
+    object-fit: cover;
+  }
+.nav img:hover {
+    cursor: pointer;
+  }
+  #popup{
+    display:flex; flex-flow:row wrap;
+    line-height: 7px;
+  }
+  #popup .left {
+    width:80%;
+    text-align:left;
+    }
+
+  #popup  .right {
+    width:20%;
+    text-align:right;
+    }
+#groupLayer{
+  position: absolute;
+  border-radius: 5px;
+  font-size: 25px;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  right:10px;  
+  z-index: 10;
+  cursor: pointer;
+}
+#groupLayer i{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#layer{
+  position: absolute;
+  width: 70px;
+  height: 400px;
+  right: 50px;
+  top: 50%;
+  z-index: 11;
+  transform: translate(0,-50%);
+  background-color: whitesmoke;
+  border-radius: 10px;
+  display: none;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+#layer .img{
+  width: 70px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+#layer p{
+  line-height: 2px;
+  font-weight: bold;
+}
+#layer img{
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  user-select: none;
+}
+#layer img:hover{
+  opacity: 0.7;
+}
