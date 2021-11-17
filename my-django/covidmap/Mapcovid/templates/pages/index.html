@@ -7,9 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="{% static 'chart.js' %}"></script>
-    <link rel="stylesheet" href="{% static '/style.css' %}" />
-    <script src="https://kit.fontawesome.com/298c92426c.js" crossorigin="anonymous"></script>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3498/3498122.png"/>
+    <link rel="stylesheet" href="{% static '/style2.css' %}" />
+    <script
+      src="https://kit.fontawesome.com/298c92426c.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="icon"
+      href="https://cdn-icons-png.flaticon.com/512/3498/3498122.png"
+    />
   </head>
   <body>
     <div class="container">
@@ -19,180 +25,201 @@
           alt="Lotus"
         />
         <ul>
-          <li><a href="#"><i class="fas fa-home"></i> home</a></li>
-          <li><a href="{% url 'map' %}"><i class="far fa-map"></i> map</a></li>
-          <li><a href="#"><i class="far fa-newspaper"></i> News</a></li>
-          <li><a href="{% url 'chart' %}"><i class="far fa-chart-bar"></i> Chart</a></li>
+          <li>
+            <a href="#"><i class="fas fa-home"></i> home</a>
+          </li>
+          <li>
+            <a href="{% url 'map' %}"><i class="far fa-map"></i> map</a>
+          </li>
+          <li>
+            <a href="{% url 'news' %}"><i class="far fa-newspaper"></i> News</a>
+          </li>
+          <li>
+            <a href="{% url 'chart' %}"
+              ><i class="far fa-chart-bar"></i> Chart</a
+            >
+          </li>
           <div id="sliding"></div>
-
         </ul>
       </div>
       <h2>SỐ LIỆU COVID-19</h2>
+      <h4>Tổng ca dương tính: {{ total }}</h4>
       <div class="horizontal"></div>
       <div class="body">
         <div><canvas id="mychart" width="10px" height="7px"></canvas></div>
         <div><canvas id="mychart1" width="10px" height="7px"></canvas></div>
         <div><canvas id="mychart2" width="10px" height="7px"></canvas></div>
+        <script>
+          var sliding = document.getElementById("sliding");
+          var item = document.querySelectorAll("a");
+          function indicator(e) {
+            sliding.style.left = e.offsetLeft + "px";
+          }
+          item.forEach((link) => {
+            link.addEventListener("mouseover", (e) => {
+              indicator(e.target);
+            });
+          });
+          function newdate(days) {
+            let today = new Date();
+            let date = new Date();
+            date.setDate(today.getDate() + days);
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            return day + "/" + month + "/" + date.getFullYear();
+          }
+          function numbers(count, min, max, int) {
+            let data = [];
+            if (int == 0) {
+              for (let i = 0; i < count; i++) {
+                data.push(Math.floor(Math.random() * max) + min);
+              }
+            } else {
+              let temp = 0;
+              for (let i = 0; i < count; i++) {
+                temp = Math.random() * 50000 + temp;
+                data.push(temp);
+              }
+            }
+            return data;
+          }
+          function labels(count) {
+            let labels = [];
+            for (let i = 0; i < count; ++i) {
+              labels.push(newdate(i - count));
+            }
+            return labels;
+          }
+          const DATA_COUNT = 100;
+          const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 100000 };
+
+          const data = {
+            labels: labels(100),
+            datasets: [
+              {
+                label: "Ca dương tính",
+                data: numbers(
+                  NUMBER_CFG.count,
+                  NUMBER_CFG.min,
+                  NUMBER_CFG.max,
+                  1
+                ),
+                backgroundColor: "rgba(255, 99, 132,0.5)",
+                borderColor: "rgb(255, 99, 132)",
+                hoverBorderColor: "#fff",
+                borderWidth: 1,
+                hoverBackgroundColor: "red",
+                pointStyle: "circle",
+              },
+            ],
+          };
+          const data2 = {
+            labels: labels(20),
+            datasets: [
+              {
+                label: "Ca dương tính{{ total }}",
+                data: numbers(20, NUMBER_CFG.min, NUMBER_CFG.max, 0),
+                backgroundColor: "rgba(255, 99, 132,0.5)",
+                borderColor: "rgb(255, 99, 132)",
+                hoverBorderColor: "#fff",
+                borderWidth: 1,
+                hoverBackgroundColor: "red",
+                pointStyle: "circle",
+              },
+            ],
+          };
+          const config = {
+            type: "bar",
+            data: data,
+            options: {
+              responsive: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Số ca dương tính",
+                },
+                legend: {
+                  labels: {
+                    usePointStyle: true,
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+              interaction: {
+                intersect: false,
+              },
+            },
+          };
+          const config1 = {
+            responsive: true,
+            type: "line",
+            data: data2,
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Tổng ca dương tính",
+                },
+                legend: {
+                  labels: {
+                    usePointStyle: true,
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+              interaction: {
+                intersect: false,
+              },
+            },
+          };
+          const config2 = {
+            responsive: true,
+            type: "bar",
+            data: data2,
+            options: {
+              indexAxis: "y",
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Số liệu theo từng khu vực",
+                },
+                legend: {
+                  labels: {
+                    usePointStyle: true,
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+              interaction: {
+                intersect: true,
+              },
+            },
+          };
+
+          var myChart = new Chart(document.getElementById("mychart"), config);
+          var myChart1 = new Chart(
+            document.getElementById("mychart1"),
+            config1
+          );
+          var myChart2 = new Chart(
+            document.getElementById("mychart2"),
+            config2
+          );
+        </script>
       </div>
       <div class="footer"><p>Copyright:myself</p></div>
     </div>
-    <script>
-      var sliding=document.getElementById("sliding");
-      var item=document.querySelectorAll('a');
-      function indicator(e) {
-        sliding.style.left=e.offsetLeft+'px';
-      }
-      item.forEach(link=>{
-        link.addEventListener('mouseover',(e)=>{
-          indicator(e.target);
-        })
-      })
-      function newdate(days) {
-        let today = new Date();
-        let date = new Date();
-        date.setDate(today.getDate() + days);
-        let month = date.getMonth() + 1;
-        let day = date.getDate();
-        return day + "/" + month + "/" + date.getFullYear();
-      }
-      function numbers(count, min, max, int) {
-        let data = [];
-        if (int == 0) {
-          for (let i = 0; i < count; i++) {
-            data.push(Math.floor(Math.random() * max) + min);
-          }
-        } else {
-          let temp=0;
-          for (let i = 0; i < count; i++) {
-            temp=Math.random() * 50000+temp;
-            data.push(temp);
-          }
-        }
-        return data;
-      }
-      function labels(count) {
-        let labels = [];
-        for (let i = 0; i < count; ++i) {
-          labels.push(newdate(i - count));
-        }
-        return labels;
-      }
-      const DATA_COUNT = 100;
-      const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 100000 };
-
-      const data = {
-        labels: labels(100),
-        datasets: [
-          {
-            label: "Ca dương tính",
-            data: numbers(NUMBER_CFG.count, NUMBER_CFG.min, NUMBER_CFG.max, 1),
-            backgroundColor: "rgba(255, 99, 132,0.5)",
-            borderColor: "rgb(255, 99, 132)",
-            hoverBorderColor: "#fff",
-            borderWidth: 1,
-            hoverBackgroundColor: "red",
-            pointStyle: "circle",
-          },
-        ],
-      };
-      const data2 = {
-        labels: labels(20),
-        datasets: [
-          {
-            label: "Ca dương tính",
-            data: numbers(20, NUMBER_CFG.min, NUMBER_CFG.max, 0),
-            backgroundColor: "rgba(255, 99, 132,0.5)",
-            borderColor: "rgb(255, 99, 132)",
-            hoverBorderColor: "#fff",
-            borderWidth: 1,
-            hoverBackgroundColor: "red",
-            pointStyle: "circle",
-          },
-        ],
-      };
-      const config = {
-        type: "bar",
-        data: data,
-        options: {
-          responsive: true,
-          plugins: {
-            title: {
-              display: true,
-              text: "Số ca dương tính",
-            },
-            legend: {
-              labels: {
-                usePointStyle: true,
-              },
-            },
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-          interaction: {
-            intersect: false,
-          },
-        },
-      };
-      const config1 = {
-        responsive: true,
-        type: "line",
-        data: data2,
-        options: {
-          plugins: {
-            title: {
-              display: true,
-              text: "Tổng ca dương tính",
-            },
-            legend: {
-              labels: {
-                usePointStyle: true,
-              },
-            },
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-          interaction: {
-            intersect: false,
-          },
-        },
-      };
-      const config2 = {
-        responsive: true,
-        type: "bar",
-        data: data2,
-        options: {
-          indexAxis: "y",
-          plugins: {
-            title: {
-              display: true,
-              text: "Số liệu theo từng khu vực",
-            },
-            legend: {
-              labels: {
-                usePointStyle: true,
-              },
-            },
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-          interaction: {
-            intersect: true,
-          },
-        },
-      };
-      
-      var myChart = new Chart(document.getElementById("mychart"), config);
-      var myChart1 = new Chart(document.getElementById("mychart1"), config1);
-      var myChart2 = new Chart(document.getElementById("mychart2"), config2);
-    </script>
   </body>
 </html>

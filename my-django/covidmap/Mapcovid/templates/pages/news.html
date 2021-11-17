@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'news2.css' %}" />
+    <script src="https://kit.fontawesome.com/298c92426c.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3498/3498122.png"/>
+  </head>
+  <body>
+      <div class="search">
+        <input type="text" placeholder=" " /> 
+        <p id="text_search">search</p>
+        {% for item in news_list %}
+        <a href="#{{item.id}}">{{item.title}}</a>
+        {% endfor %}
+      </div>
+      <div id="gotop">      
+        <a href="#"> <i class="fas fa-chevron-up"></i></a>
+      </div>
+    <div class="container">
+      <div class="nav">
+        <img
+          class="logo"
+          src="https://cdn-icons-png.flaticon.com/512/3498/3498122.png"
+          alt="Lotus"
+        />
+        <ul >
+          <li><a href="#"><i class="fas fa-home"></i><span> home</span></a></li>
+          <li><a href="{% url 'map' %}"><i class="far fa-map"></i><span> map</span></a></li>
+          <li><a href="{% url 'news' %}"><i class="far fa-news_listpaper"></i><span> news_list</span></a></li>
+          <li><a href="{% url 'chart' %}"><i class="far fa-chart-bar"></i><span> Chart</span></a></li>
+          <div id="sliding"></div>
+        </ul>
+      </div>
+      <div class="container_content" >
+        {% for item in news_list %}
+        <div class="content" id="{{item.id}}" >
+            <div class="center_content">
+                <a href="https://covid19.gov.vn{{item.url}}" title="{{item.title}}" target="_blank"><img src="{{item.image}}" alt="" ></a> 
+                <a href="https://covid19.gov.vn{{item.url}}" title="{{item.title}}" target="_blank"><p class="subject">{{item.title}}</p></a>
+                <p class="content_content">{{item.description}}</p>
+            </div>          
+          </div>
+        {% endfor %}       
+        <div class="pagination">
+          <span class="step-links">
+              {% if news_list.has_previous %}
+                  <a href="?page=1"><i class="fas fa-fast-backward"></i></a>
+                  <a href="?page={{ news_list.previous_page_number }}"><i class="fas fa-backward"></i></a>
+              {% endif %}
+      
+              <span class="current">
+                  Page {{ news_list.number }} of {{ news_list.paginator.num_pages }}. &emsp;     
+              </span>
+      
+              {% if news_list.has_next %}
+                  <a href="?page={{ news_list.next_page_number }}"><i class="fas fa-forward"></i></a>
+                  <a href="?page={{ news_list.paginator.num_pages }}"><i class="fas fa-fast-forward"></i></a>
+              {% endif %}
+          </span>
+      </div>  
+      </div>
+      
+      <div class="footer">
+        <div class="footer_content">
+          <div class="footer_content_left">
+            <p>Copyright © 2020</p>
+          </div>
+          <div class="footer_content_right">
+            <p>Địa chỉ: Số 1, Đường Cộng Hòa, Phường Bến Nghé, Quận 1, TP.HCM</p>
+            <p>Điện thoại: 028.3868.9696</p>
+            <p>Email:abc@gmail.com</p>
+      </div>
+    </div>
+      <script>
+        let page_height=document.querySelector(':root');
+        page_height.style.setProperty('--page_height',document.body.scrollHeight+'px');
+        let menu = document.getElementsByClassName( 'nav' );
+        var menu_slider_hover = document.getElementById("sliding");
+        if ( menu_slider_hover ) {
+            nav_slider( menu[0], function( el, width, tempMarginLeft ) {                          
+            el.onmouseover = () => {
+                menu_slider_hover.style.width =  width + '%';                    
+                 menu_slider_hover.style.marginLeft = tempMarginLeft + '%';    
+            }
+            });
+        }
+        function nav_slider( menu, callback ) {
+        let menu_width = menu.offsetWidth;
+        // We only want the <li> </li> tags
+        menu = menu.getElementsByTagName( 'li' );            
+        if ( menu.length > 0 ) {
+            var marginLeft = [];
+            // Loop through nav children i.e li
+            [].forEach.call( menu, ( el, index ) => {
+            // Dynamic width/margin calculation for hr              
+            var width = getPercentage( el.offsetWidth, menu_width );                              
+            var tempMarginLeft = 0;
+            // We don't want to modify first elements positioning
+            if ( index != 0 )  {
+                tempMarginLeft = getArraySum( marginLeft );
+            }            
+            // Set mouse event  hover/click
+            callback( el, width, tempMarginLeft );      
+            /* We store it in array because the later accumulated value is used for positioning */
+            marginLeft.push( width );
+            } );
+        }
+        }
+        function getPercentage( min, max ) {
+            return min / max * 100;
+        }
+        // Not using reduce, because IE8 doesn't supprt it
+        function getArraySum( arr ) {
+            let sum = 0;
+            [].forEach.call( arr, ( el, index ) => {
+                sum += el;
+            } );
+            return sum;
+        }      
+        let scroll1=document.querySelector(":root");    
+        window.addEventListener('scroll',function(){
+            let max=document.body.scrollHeight-window.innerHeight;
+            let width=window.innerWidth;
+            let handle=width*window.scrollY/max-width;
+            scroll1.style.setProperty('--right',handle+'px');
+            console.log(window.scrollY);
+            if (window.scrollY>=300) {
+                document.querySelector("#gotop").style.display="block";
+            }
+            else{
+                document.querySelector("#gotop").style.display="none";
+            }
+        })
+</script>
+</body>
+</html>

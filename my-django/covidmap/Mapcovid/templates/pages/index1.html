@@ -18,8 +18,10 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+
     <script src="https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js"></script>
-    <link rel="stylesheet" href="{% static 'style1.css' %}" />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <script src="{% static 'chart.js' %}"></script>
   </head>
   <body>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
@@ -50,7 +52,9 @@
           <a href="#"><i class="far fa-newspaper"></i> News</a>
         </li>
         <li>
-          <a href="{% url 'chart' %}"><i class="far fa-chart-bar"></i> Chart</a>
+          <a href="{% url 'chart' %} "
+            ><i class="far fa-chart-bar"></i> Chart</a
+          >
         </li>
         <div id="sliding"></div>
       </ul>
@@ -73,16 +77,54 @@
           <p>Streets</p>
         </div>
         <div class="img">
-          <img src="{% static '/map-outdoors.png' %}" alt="" id="outdoors-v11" />
+          <img
+            src="{% static '/map-outdoors.png' %}"
+            alt=""
+            id="outdoors-v11"
+          />
           <p>Oudoors</p>
         </div>
         <div class="img">
-          <img src="{% static '/map-statellite.png' %}" alt="" id="satellite-v9" />
+          <img
+            src="{% static '/map-statellite.png' %}"
+            alt=""
+            id="satellite-v9"
+          />
           <p>Statellute</p>
         </div>
       </div>
+      <div id="datalist" class="dlist">
+        <input
+          id="datalist-input"
+          class="dlist-input"
+          type="text"
+          placeholder="Chọn tỉnh"
+        />
+        <i id="datalist-icon" class="icon iconfont icon-arrow"></i>
+        <ul id="datalist-ul" class="dlist-ul"></ul>
+      </div>
+      <div id="datalist1" class="dlist">
+        <input
+          id="datalist-input1"
+          class="dlist-input"
+          type="text"
+          placeholder="Chọn huyện"
+        />
+        <i id="datalist-icon" class="icon iconfont icon-arrow"></i>
+        <ul id="datalist-ul1" class="dlist-ul"></ul>
+      </div>
+      <div id="datalist2" class="dlist">
+        <input
+          id="datalist-input2"
+          class="dlist-input"
+          type="text"
+          placeholder="Chọn xã"
+        />
+        <i id="datalist-icon" class="icon iconfont icon-arrow"></i>
+        <ul id="datalist-ul2" class="dlist-ul"></ul>
+      </div>
     </div>
-    <script src="{% static 'map4.js' %}"></script>
+    <script src="{% static 'map1.js' %}"></script>
     <script>
       var groupLayer = document.getElementById("groupLayer");
       var layer = document.getElementById("layer");

@@ -19,6 +19,7 @@ class overview(models.Model):
     avgCases7day=models.IntegerField(default=0)
     avgRecovered7day=models.IntegerField(default=0)
     avgDeath7day=models.IntegerField(default=0)
+
     def __str__(self):
         return self.date
 class today(models.Model):
@@ -39,3 +40,11 @@ class total(models.Model):
     total_type=models.CharField(max_length=100,default="")
     def __str__(self):
         return self.total_type
+class newss(models.Model):
+    title=models.TextField()
+    description=models.TextField()
+    url=models.TextField()
+    image=models.TextField()
+    id=models.AutoField(primary_key=True)
+    def __str__(self):
+        return self.title
