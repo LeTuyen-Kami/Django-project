@@ -1,9 +1,13 @@
+import random
 import requests
-import json
-from .models import Locations, total, today, overview, newss
+from icecream import ic
+from .models import Locations, total, today, overview, newss, Covid_huyen, Covid_xa
 from datetime import date
 from bs4 import BeautifulSoup
+import time
+random.seed(time.time())
 url_data_covid = "https://static.pipezero.com/covid/data.json"
+url_donvihanhchinh_tinh = "https://provinces.open-api.vn/api/p/"
 
 
 def get_json_data(url):
@@ -31,6 +35,18 @@ def udatedata():
                 Today=date.today(),
             )
             saving.save()
+    json_donvihanhchinh_tinh = get_json_data(url_donvihanhchinh_tinh)
+    for i in json_donvihanhchinh_tinh:
+        Locations.objects.filter(name='Bà Rịa - Vũng Tàu').update(
+            code=77,
+        )
+        Locations.objects.filter(name='Hoà Bình').update(
+            code=17,
+        )
+        if (Locations.objects.filter(name__contains=i['name'].replace("Tỉnh ", "").replace("Thành phố ", "")).exists()):
+            Locations.objects.filter(name__contains=i['name'].replace("Tỉnh ", "").replace("Thành phố ", "")).update(
+                code=i['code'],
+            )
     for i in json_data_covid['overview']:
         if (overview.objects.filter(date=i['date']).exists()):
             saving = overview.objects.filter(date=i['date']).update(
@@ -102,10 +118,32 @@ def udatedata():
 url_news = "https://covid19.gov.vn/timelinelist/1711565/{}.htm"
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+# create class stack in python
+
+
+class stack:
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        return self.items.pop()
+
+    def peek(self):
+        return self.items[len(self.items)-1]
+
+    def size(self):
+        return len(self.items)
 
 
 def update_news():
     i = 1
+    Stack = stack()
     while True:
         response = requests.get(url_news.format(i), headers=headers)
         parser = BeautifulSoup(response.text, "html.parser")
@@ -121,12 +159,80 @@ def update_news():
             description = content.find(
                 "div", class_="box-stream-content").find("p").text
             if (not newss.objects.filter(title=title).exists()):
-                saving = newss.objects.create(
-                    title=title,
-                    url=link,
-                    description=description,
-                    image=image,
-                )
-                saving.save()
+                Stack.push({
+                    "title": title,
+                    "url": link,
+                    "image": image,
+                    "description": description,
+                })
         i += 1
+    while Stack.size() > 0:
+        news = Stack.pop()
+        saving = newss.objects.create(
+            title=news["title"],
+            url=news["url"],
+            image=news["image"],
+            description=news["description"],
+        )
+        saving.save()
     return i
+
+
+url_xa = "https://provinces.open-api.vn/api/w/"
+url_huyen = "https://provinces.open-api.vn/api/d/"
+
+
+def addAndUpdateXaHuyentoDatabase():
+    jsonHuyen = get_json_data(url_huyen)
+    for huyen in jsonHuyen:
+        if (Covid_huyen.objects.filter(id_huyen=huyen['code']).exists()):
+            Covid_huyen.objects.update(
+                cases=random.randint(0, int(Locations.objects.get(
+                    code=huyen['province_code']).cases/5)),
+                death=random.randint(0, int(Locations.objects.get(
+                    code=huyen['province_code']).death/5)),
+                recovered=random.randint(0, int(Locations.objects.get(
+                    code=huyen['province_code']).recovered/5)),
+                Today=date.today(),
+            )
+        else:
+            saving = Covid_huyen.objects.create(
+                id_huyen=huyen['code'],
+                name=huyen['name'],
+                id_tinh=Locations.objects.get(code=huyen['province_code']),
+                cases=random.randint(0, int(Locations.objects.get(
+                    code=huyen['province_code']).cases/5)),
+                death=random.randint(0, int(Locations.objects.get(
+                    code=huyen['province_code']).death/5)),
+                recovered=random.randint(0, int(Locations.objects.get(
+                    code=huyen['province_code']).recovered/5)),
+                Today=date.today(),
+            )
+            saving.save()
+
+    jsonXa = get_json_data(url_xa)
+    for xa in jsonXa:
+        if (Covid_xa.objects.filter(id_xa=xa['code']).exists()):
+            Covid_xa.objects.update(
+                cases=random.randint(0, int(Covid_huyen.objects.get(
+                    id_huyen=xa['district_code']).cases/5)),
+                death=random.randint(
+                    0, int(Covid_huyen.objects.get(id_xa=xa['district_code']).death/5)),
+                recovered=random.randint(
+                    0, int(Covid_huyen.objects.get(id_xa=xa['district_code']).recovered/5)),
+                Today=date.today(),
+            )
+        else:
+            saving = Covid_xa.objects.create(
+                id_xa=xa['code'],
+                name=xa['name'],
+                id_huyen=Covid_huyen.objects.get(id_huyen=xa['district_code']),
+                cases=random.randint(0, int(Covid_huyen.objects.get(
+                    id_huyen=xa['district_code']).cases/5)),
+                death=random.randint(0, int(Covid_huyen.objects.get(
+                    id_huyen=xa['district_code']).death/5)),
+                recovered=random.randint(0, int(Covid_huyen.objects.get(
+                    id_huyen=xa['district_code']).recovered/5)),
+                Today=date.today(),
+            )
+            saving.save()

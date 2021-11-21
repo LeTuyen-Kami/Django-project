@@ -38,22 +38,27 @@
     </style>
     <div class="nav">
       <img
+        class="logo"
         src="https://cdn-icons-png.flaticon.com/512/3498/3498122.png"
         alt="Lotus"
       />
       <ul>
         <li>
-          <a href="#"><i class="fas fa-home"></i> home</a>
+          <a href="#"><i class="fas fa-home"></i><span> home</span></a>
         </li>
         <li>
-          <a href="{% url 'map' %}"><i class="far fa-map"></i> map</a>
+          <a href="{% url 'map' %}"
+            ><i class="far fa-map"></i><span> map</span></a
+          >
         </li>
         <li>
-          <a href="#"><i class="far fa-newspaper"></i> News</a>
+          <a href="{% url 'news' %}"
+            ><i class="far fa-news_listpaper"></i><span> news_list</span></a
+          >
         </li>
         <li>
-          <a href="{% url 'chart' %} "
-            ><i class="far fa-chart-bar"></i> Chart</a
+          <a href="{% url 'chart' %}"
+            ><i class="far fa-chart-bar"></i><span> Chart</span></a
           >
         </li>
         <div id="sliding"></div>
@@ -99,6 +104,7 @@
           class="dlist-input"
           type="text"
           placeholder="Chọn tỉnh"
+          autocomplete="off"
         />
         <i id="datalist-icon" class="icon iconfont icon-arrow"></i>
         <ul id="datalist-ul" class="dlist-ul"></ul>
@@ -109,6 +115,7 @@
           class="dlist-input"
           type="text"
           placeholder="Chọn huyện"
+          autocomplete="off"
         />
         <i id="datalist-icon" class="icon iconfont icon-arrow"></i>
         <ul id="datalist-ul1" class="dlist-ul"></ul>
@@ -119,12 +126,13 @@
           class="dlist-input"
           type="text"
           placeholder="Chọn xã"
+          autocomplete="off"
         />
         <i id="datalist-icon" class="icon iconfont icon-arrow"></i>
         <ul id="datalist-ul2" class="dlist-ul"></ul>
       </div>
     </div>
-    <script src="{% static 'map1.js' %}"></script>
+    <script src="{% static 'map.js' %}"></script>
     <script>
       var groupLayer = document.getElementById("groupLayer");
       var layer = document.getElementById("layer");
@@ -138,5 +146,6 @@
         }
       });
     </script>
+    <script src="{% static 'navslide.js' %}"></script>
   </body>
 </html>
